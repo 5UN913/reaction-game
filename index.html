@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>反应游戏 - Three.js增强版</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+</head>
+<body>
+    <div id="game-container">
+        <!-- 开始界面 -->
+        <div id="start-screen" class="screen active">
+            <h1 id="game-title">反应游戏</h1>
+            <button id="start-button" class="btn-primary">开始游戏</button>
+            <div id="game-rules">
+                <h2>游戏规则</h2>
+                <p>1. 点击屏幕上出现的3D目标</p>
+                <p>2. 反应速度越快，得分越高</p>
+                <p>3. 游戏共10个回合</p>
+                <p>4. 点击空白区域会扣分</p>
+            </div>
+        </div>
+
+        <!-- 游戏界面 -->
+        <div id="game-screen" class="screen">
+            <div id="score-display">分数: <span id="score">0</span></div>
+            <div id="time-display">时间: <span id="time">0</span>s</div>
+            <div id="round-display">回合: <span id="round">1</span>/10</div>
+            <div id="canvas-container"></div>
+        </div>
+
+        <!-- 结束界面 -->
+        <div id="end-screen" class="screen">
+            <h1 id="final-score">最终得分: <span id="score-value">0</span></h1>
+            <h2 id="high-score">历史最高分: <span id="high-score-value">0</span></h2>
+            <button id="restart-button" class="btn-primary">重新开始</button>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
