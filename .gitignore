@@ -1,0 +1,17 @@
+# Ignore .trae directory
+.trae/
+
+# Ignore node_modules (if any)
+node_modules/
+
+# Ignore build files (if any)
+build/
+dist/
+
+# Ignore IDE files (if any)
+.vscode/
+.idea/
+
+# Ignore OS files
+.DS_Store
+Thumbs.db
