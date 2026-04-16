@@ -11,6 +11,19 @@ let gameState = {
     isTargetActive: false
 };
 
+// 音效对象
+const sounds = {
+    click: new Audio('https://assets.mixkit.co/sfx/preview/mixkit-arcade-game-jump-coin-216.mp3'),
+    miss: new Audio('https://assets.mixkit.co/sfx/preview/mixkit-arcade-game-over-213.mp3'),
+    start: new Audio('https://assets.mixkit.co/sfx/preview/mixkit-video-game-boop-2049.mp3'),
+    end: new Audio('https://assets.mixkit.co/sfx/preview/mixkit-game-level-complete-2063.mp3')
+};
+
+// 预加载音效
+Object.values(sounds).forEach(sound => {
+    sound.preload = 'auto';
+});
+
 // Three.js 变量
 let scene, camera, renderer, raycaster, mouse;
 let target, particles = [];
@@ -100,6 +113,16 @@ function updateTargetAnimation() {
         target.position.y = Math.sin(Date.now() * 0.001) * 0.5;
     } else if (target.type === 'cylinder') {
         target.rotation.z += 0.01;
+    } else if (target.type === 'tetrahedron') {
+        target.rotation.x += 0.015;
+        target.rotation.y += 0.01;
+    } else if (target.type === 'octahedron') {
+        target.rotation.z += 0.015;
+        target.position.y = Math.sin(Date.now() * 0.0015) * 0.4;
+    } else if (target.type === 'dodecahedron') {
+        target.rotation.x += 0.008;
+        target.rotation.y += 0.012;
+        target.rotation.z += 0.005;
     }
 }
 
@@ -123,6 +146,9 @@ function updateParticles() {
 
 // 开始游戏
 function startGame() {
+    // 播放开始音效
+    sounds.start.play();
+    
     // 重置游戏状态
     gameState.score = 0;
     gameState.gameTime = 0;
@@ -169,16 +195,16 @@ function generateTarget() {
         scene.remove(target);
     }
     
-    // 随机生成目标类型
-    const types = ['cube', 'sphere', 'cylinder'];
+    // 随机生成目标类型（添加更多几何体类型）
+    const types = ['cube', 'sphere', 'cylinder', 'tetrahedron', 'octahedron', 'dodecahedron'];
     const type = types[Math.floor(Math.random() * types.length)];
     
-    // 随机生成大小
-    const size = 0.5 + Math.random() * 0.5;
+    // 随机生成大小（确保大小适中）
+    const size = 0.3 + Math.random() * 0.4;
     
-    // 随机生成位置
-    const x = (Math.random() - 0.5) * 4;
-    const y = (Math.random() - 0.5) * 4;
+    // 随机生成位置（确保分散）
+    const x = (Math.random() - 0.5) * 5;
+    const y = (Math.random() - 0.5) * 5;
     const z = 0;
     
     // 创建几何体
@@ -189,12 +215,22 @@ function generateTarget() {
         geometry = new THREE.SphereGeometry(size, 32, 32);
     } else if (type === 'cylinder') {
         geometry = new THREE.CylinderGeometry(size / 2, size / 2, size, 32);
+    } else if (type === 'tetrahedron') {
+        geometry = new THREE.TetrahedronGeometry(size);
+    } else if (type === 'octahedron') {
+        geometry = new THREE.OctahedronGeometry(size);
+    } else if (type === 'dodecahedron') {
+        geometry = new THREE.DodecahedronGeometry(size);
     }
+    
+    // 随机生成颜色（使用指定的颜色方案）
+    const colors = [0xFF6B6B, 0x4ECDC4, 0xA78BFA];
+    const color = colors[Math.floor(Math.random() * colors.length)];
     
     // 创建材质
     const material = new THREE.MeshStandardMaterial({ 
-        color: 0xFF6B6B,
-        emissive: 0xFF6B6B,
+        color: color,
+        emissive: color,
         emissiveIntensity: 0.3
     });
     
@@ -256,6 +292,9 @@ function detectClick() {
 
 // 处理点击目标
 function handleTargetClick() {
+    // 播放点击音效
+    sounds.click.play();
+    
     // 计算反应时间
     const reactionTime = Date.now() - gameState.targetAppearTime;
     gameState.reactionTime = reactionTime;
@@ -287,6 +326,9 @@ function handleTargetClick() {
 
 // 处理点击空白
 function handleMissClick() {
+    // 播放错过音效
+    sounds.miss.play();
+    
     // 扣分
     gameState.score = Math.max(0, gameState.score - 50);
     
@@ -322,6 +364,9 @@ function createParticles(position, color) {
 
 // 结束游戏
 function endGame() {
+    // 播放结束音效
+    sounds.end.play();
+    
     gameState.state = 'end';
     
     // 更新最高分
